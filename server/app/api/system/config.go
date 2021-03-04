@@ -48,6 +48,19 @@ func (c *_config) GetServerInfo(r *ghttp.Request) *response.Response {
 		g.Log().Error("获取失败!", g.Map{"err": err})
 		return &response.Response{Error: err, MessageCode: response.ErrorOperation}
 	} else {
-		return &response.Response{Data:g.Map{"server": result}, MessageCode: response.SuccessOperation}
+		return &response.Response{Data: g.Map{"server": result}, MessageCode: response.SuccessOperation}
 	}
+}
+
+// @Tags SystemConfig
+// @Summary 重启服务
+// @Security ApiKeyAuth
+// @Produce  application/json
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"重启系统成功"}"
+// @Router /system/reloadSystem [post]
+func (c *_config) ReloadSystem(r *ghttp.Request) *response.Response {
+	if err := ghttp.RestartAllServer(); err != nil {
+		return &response.Response{Code: 7, Error: err, Message: "重启系统失败!"}
+	}
+	return &response.Response{Code: 0, Message: "重启系统成功!"}
 }
